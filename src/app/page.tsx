@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import Navigation from "@/components/Navigation";
 import StockCard from "@/components/StockCard";
 import FilterBar from "@/components/FilterBar";
@@ -54,11 +55,42 @@ function EmptyState({ hasRun }: { hasRun: boolean }) {
 }
 
 export default function Dashboard() {
+  const router = useRouter();
   const [results, setResults] = useState<StockResult[]>([]);
   const [total, setTotal] = useState(0);
   const [lastScan, setLastScan] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [hasRunScan, setHasRunScan] = useState(false);
+
+  const [tickerInput, setTickerInput] = useState("");
+  const [tickerLoading, setTickerLoading] = useState(false);
+  const [tickerError, setTickerError] = useState("");
+
+  async function handleTickerLookup() {
+    const symbol = tickerInput.trim().toUpperCase();
+    if (!symbol) return;
+    setTickerLoading(true);
+    setTickerError("");
+    try {
+      const res = await fetch("/api/scan/ticker", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ticker: symbol }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setTickerError(data.error ?? "Lookup failed");
+        setTimeout(() => setTickerError(""), 4000);
+        return;
+      }
+      router.push(`/stocks/${symbol}`);
+    } catch {
+      setTickerError("Network error");
+      setTimeout(() => setTickerError(""), 4000);
+    } finally {
+      setTickerLoading(false);
+    }
+  }
 
   const [minR2, setMinR2] = useState(0.7);
   const [period, setPeriod] = useState(6);
@@ -135,12 +167,60 @@ export default function Dashboard() {
               )}
             </p>
           </div>
-          <ScanButton
-            onComplete={() => {
-              setHasRunScan(true);
-              fetchResults();
-            }}
-          />
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+            {/* Ticker lookup */}
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <input
+                type="text"
+                placeholder="Ticker…"
+                value={tickerInput}
+                disabled={tickerLoading}
+                onChange={(e) => setTickerInput(e.target.value.toUpperCase())}
+                onKeyDown={(e) => e.key === "Enter" && handleTickerLookup()}
+                style={{
+                  width: "100px",
+                  padding: "9px 12px",
+                  borderRadius: "10px",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  background: "rgba(255,255,255,0.05)",
+                  color: "hsl(210 40% 98%)",
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  letterSpacing: "0.05em",
+                  outline: "none",
+                }}
+              />
+              <button
+                onClick={handleTickerLookup}
+                disabled={tickerLoading || !tickerInput.trim()}
+                style={{
+                  padding: "9px 14px",
+                  borderRadius: "10px",
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  border: "none",
+                  cursor: tickerLoading || !tickerInput.trim() ? "default" : "pointer",
+                  background: tickerLoading
+                    ? "rgba(255,255,255,0.08)"
+                    : "rgba(255,255,255,0.08)",
+                  color: tickerLoading || !tickerInput.trim() ? "#475569" : "#94a3b8",
+                  transition: "all 0.15s ease",
+                }}
+              >
+                {tickerLoading ? "…" : "Go"}
+              </button>
+              {tickerError && (
+                <span style={{ fontSize: "12px", color: "#ef4444" }}>{tickerError}</span>
+              )}
+            </div>
+
+            <ScanButton
+              onComplete={() => {
+                setHasRunScan(true);
+                fetchResults();
+              }}
+            />
+          </div>
         </div>
 
         {/* Filter bar */}
