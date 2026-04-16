@@ -11,6 +11,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import { useBreakpoint } from "@/hooks/useBreakpoint";
 
 interface ChartDataPoint {
   date: string;
@@ -88,9 +89,13 @@ export default function RegressionChart({
   priceData,
   regressionLine,
   rSquared,
-  height = 350,
+  height,
 }: RegressionChartProps) {
-  // Merge price data and regression line
+  const isMobile = useBreakpoint();
+  const chartHeight = height ?? (isMobile ? 220 : 350);
+  const yAxisWidth = isMobile ? 40 : 60;
+  const tickFontSize = isMobile ? 10 : 11;
+
   const chartData: ChartDataPoint[] = priceData.map((p) => {
     const regPoint = regressionLine?.find((r) => r.date === p.date);
     return {
@@ -114,7 +119,7 @@ export default function RegressionChart({
     : "#ef4444";
 
   return (
-    <div style={{ width: "100%", height }}>
+    <div style={{ width: "100%", height: chartHeight }}>
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart data={chartData} margin={{ top: 10, right: 20, left: 10, bottom: 0 }}>
           <defs>
@@ -130,7 +135,7 @@ export default function RegressionChart({
           />
           <XAxis
             dataKey="date"
-            tick={{ fill: "#64748b", fontSize: 11 }}
+            tick={{ fill: "#64748b", fontSize: tickFontSize }}
             tickLine={false}
             axisLine={{ stroke: "rgba(255,255,255,0.08)" }}
             interval="preserveStartEnd"
@@ -138,10 +143,10 @@ export default function RegressionChart({
           <YAxis
             domain={[minPrice, maxPrice]}
             tickFormatter={(v) => `$${v.toFixed(0)}`}
-            tick={{ fill: "#64748b", fontSize: 11 }}
+            tick={{ fill: "#64748b", fontSize: tickFontSize }}
             tickLine={false}
             axisLine={false}
-            width={60}
+            width={yAxisWidth}
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend
