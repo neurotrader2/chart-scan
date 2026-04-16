@@ -41,7 +41,7 @@ export default function FilterBar({
   onPeriodChange,
   onSortByChange,
 }: FilterBarProps) {
-  const periods = [3, 6, 9, 12];
+  const periods = [0, 3, 6, 9, 12];
   const sortOptions = [
     { value: "compositeScore", label: "Score" },
     { value: "rSquared", label: "R²" },
@@ -97,7 +97,7 @@ export default function FilterBar({
               onClick={() => onPeriodChange(p)}
               style={period === p ? activeBtn : inactiveBtn}
             >
-              {p}mo
+              {p === 0 ? "All" : `${p}mo`}
             </button>
           ))}
         </div>

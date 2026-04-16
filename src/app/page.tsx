@@ -120,7 +120,7 @@ export default function Dashboard() {
           <div>
             <p style={{ fontSize: "14px", color: "#64748b", margin: 0 }}>
               {total > 0
-                ? `${total} stocks with R² ≥ ${minR2.toFixed(2)} · ${period}mo trend`
+                ? `${total} stocks with R² ≥ ${minR2.toFixed(2)} · ${period === 0 ? "all periods" : `${period}mo trend`}`
                 : "Finds stocks on a slow, steady uptrend using linear regression"}
               {lastScan && (
                 <span style={{ marginLeft: "12px", color: "#475569" }}>

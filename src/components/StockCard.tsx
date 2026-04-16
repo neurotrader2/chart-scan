@@ -166,7 +166,7 @@ export default function StockCard({
           <div>
             <div style={{ fontSize: "11px", color: "#64748b", marginBottom: "2px" }}>Period</div>
             <div style={{ fontSize: "14px", fontWeight: 600, color: "#94a3b8" }}>
-              {periodMonths}mo
+              {periodMonths === 0 ? "All" : `${periodMonths}mo`}
             </div>
           </div>
         </div>

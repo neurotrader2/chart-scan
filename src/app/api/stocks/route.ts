@@ -28,6 +28,66 @@ export async function GET(request: NextRequest) {
     });
   }
 
+  // "All" mode: average metrics across all periods per ticker
+  if (period === 0) {
+    const sortExpr =
+      sortBy === "rSquared" ? sql`AVG(${scanResults.rSquared}::numeric)`
+      : sortBy === "slope"  ? sql`AVG(${scanResults.slope}::numeric)`
+      :                       sql`AVG(${scanResults.compositeScore}::numeric)`;
+
+    const baseWhere = and(
+      sql`${scanResults.scanDate} >= (SELECT MAX(scan_date) FROM scan_results) - INTERVAL '1 hour'`,
+      sql`${stocks.marketCap} < 10000000000`,
+    );
+
+    const [results, countRaw] = await Promise.all([
+      db
+        .select({
+          ticker:           scanResults.ticker,
+          rSquared:         sql<string>`AVG(${scanResults.rSquared}::numeric)`,
+          slope:            sql<string>`AVG(${scanResults.slope}::numeric)`,
+          intercept:        sql<string>`AVG(${scanResults.intercept}::numeric)`,
+          annualizedReturn: sql<string>`AVG(${scanResults.annualizedReturn}::numeric)`,
+          compositeScore:   sql<string>`AVG(${scanResults.compositeScore}::numeric)`,
+          currentPrice:     sql<string>`AVG(${scanResults.currentPrice}::numeric)`,
+          scanDate:         sql<string>`MAX(${scanResults.scanDate})`,
+          periodMonths:     sql<number>`0`,
+          name:             stocks.name,
+          marketCap:        stocks.marketCap,
+          exchange:         stocks.exchange,
+        })
+        .from(scanResults)
+        .leftJoin(stocks, eq(stocks.ticker, scanResults.ticker))
+        .where(baseWhere)
+        .groupBy(scanResults.ticker, stocks.name, stocks.marketCap, stocks.exchange)
+        .having(sql`AVG(${scanResults.rSquared}::numeric) >= ${minR2}`)
+        .orderBy(desc(sortExpr))
+        .limit(limit)
+        .offset(offset),
+
+      db.execute(
+        sql`SELECT COUNT(*) AS count FROM (
+          SELECT sr.ticker
+          FROM scan_results sr
+          LEFT JOIN stocks s ON s.ticker = sr.ticker
+          WHERE sr.scan_date >= (SELECT MAX(scan_date) FROM scan_results) - INTERVAL '1 hour'
+            AND s.market_cap < 10000000000
+          GROUP BY sr.ticker
+          HAVING AVG(sr.r_squared::numeric) >= ${minR2}
+        ) subq`
+      ),
+    ]);
+
+    return NextResponse.json({
+      results,
+      total: Number((countRaw.rows[0] as { count: string }).count ?? 0),
+      page,
+      limit,
+      lastScan: latestDate,
+    });
+  }
+
+  // Single-period mode
   // Compute the cutoff entirely in SQL to avoid JS Date parsing issues across platforms.
   // This finds all rows within 1 hour of the latest scan date.
   const conditions = [
