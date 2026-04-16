@@ -127,6 +127,7 @@ export default function StockDetailPage({
             background: "transparent",
             color: "#64748b",
             cursor: "pointer",
+            minHeight: "44px",
           }}
         >
           ← Dashboard
@@ -170,7 +171,7 @@ export default function StockDetailPage({
               <button
                 key={p}
                 onClick={() => setActivePeriod(p)}
-                className="min-h-[44px] px-4 rounded-lg text-sm font-medium transition-all duration-150"
+                className="min-h-[44px] px-3 sm:px-4 rounded-lg text-xs sm:text-sm font-medium transition-all duration-150"
                 style={{
                   border: active
                     ? "1px solid hsl(34 92% 60% / 0.5)"
