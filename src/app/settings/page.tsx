@@ -51,25 +51,12 @@ function SliderSetting({
   onChange: (v: number) => void;
 }) {
   return (
-    <div
-      style={{
-        padding: "20px 24px",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "4px",
-        }}
-      >
-        <label style={{ fontSize: "14px", fontWeight: 600, color: "hsl(210 40% 98%)" }}>{label}</label>
+    <div className="p-4 sm:p-5 border-b border-white/[0.06]">
+      <div className="flex justify-between items-center mb-1">
+        <label className="text-sm font-semibold" style={{ color: "hsl(210 40% 98%)" }}>{label}</label>
         <span
+          className="text-sm font-bold shrink-0"
           style={{
-            fontSize: "14px",
-            fontWeight: 700,
             color: "hsl(34 92% 60%)",
             background: "hsl(34 92% 60% / 0.1)",
             padding: "2px 10px",
@@ -79,7 +66,7 @@ function SliderSetting({
           {format(value)}
         </span>
       </div>
-      <p style={{ fontSize: "12px", color: "#64748b", margin: "0 0 12px" }}>{description}</p>
+      <p className="text-xs m-0 mb-3" style={{ color: "#64748b" }}>{description}</p>
       <input
         type="range"
         min={min}
@@ -89,15 +76,7 @@ function SliderSetting({
         onChange={(e) => onChange(parseFloat(e.target.value))}
         style={{ width: "100%", accentColor: "hsl(34 92% 60%)" }}
       />
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          fontSize: "11px",
-          color: "#475569",
-          marginTop: "4px",
-        }}
-      >
+      <div className="flex justify-between text-xs mt-1" style={{ color: "#475569" }}>
         <span>{format(min)}</span>
         <span>{format(max)}</span>
       </div>
@@ -134,39 +113,24 @@ export default function SettingsPage() {
     <div style={{ minHeight: "100vh" }}>
       <Navigation />
 
-      <main style={{ maxWidth: "720px", margin: "0 auto", padding: "40px 24px" }}>
-        <div style={{ marginBottom: "32px" }}>
+      <main className="max-w-[720px] mx-auto px-4 py-6 sm:px-6 sm:py-10">
+        <div className="mb-8">
           <h1
-            style={{
-              fontSize: "28px",
-              fontWeight: 800,
-              color: "hsl(210 40% 98%)",
-              margin: "0 0 6px",
-              letterSpacing: "-0.03em",
-            }}
+            className="text-2xl sm:text-3xl font-extrabold m-0 mb-1.5"
+            style={{ color: "hsl(210 40% 98%)", letterSpacing: "-0.03em" }}
           >
             Scanner Settings
           </h1>
-          <p style={{ fontSize: "14px", color: "#64748b", margin: 0 }}>
+          <p className="text-sm m-0" style={{ color: "#64748b" }}>
             Customize filters for the biotech stock scan. Settings are saved to your browser.
           </p>
         </div>
 
         {/* Settings card */}
-        <div
-          className="glass-card"
-          style={{ overflow: "hidden", marginBottom: "24px" }}
-        >
+        <div className="glass-card overflow-hidden mb-6">
           <div
-            style={{
-              padding: "14px 24px",
-              borderBottom: "1px solid rgba(255,255,255,0.06)",
-              fontSize: "12px",
-              fontWeight: 600,
-              color: "#475569",
-              textTransform: "uppercase",
-              letterSpacing: "0.08em",
-            }}
+            className="px-4 sm:px-6 py-3.5 border-b border-white/[0.06] text-xs font-semibold uppercase tracking-widest"
+            style={{ color: "#475569" }}
           >
             Regression Filters
           </div>
@@ -205,16 +169,8 @@ export default function SettingsPage() {
           />
 
           <div
-            style={{
-              padding: "14px 24px",
-              borderBottom: "1px solid rgba(255,255,255,0.06)",
-              borderTop: "1px solid rgba(255,255,255,0.06)",
-              fontSize: "12px",
-              fontWeight: 600,
-              color: "#475569",
-              textTransform: "uppercase",
-              letterSpacing: "0.08em",
-            }}
+            className="px-4 sm:px-6 py-3.5 border-b border-white/[0.06] border-t border-t-white/[0.06] text-xs font-semibold uppercase tracking-widest"
+            style={{ color: "#475569" }}
           >
             Stock Filters
           </div>
@@ -244,14 +200,11 @@ export default function SettingsPage() {
 
         {/* Notice */}
         <div
+          className="rounded-[10px] p-4 text-sm mb-6"
           style={{
             background: "hsl(34 92% 60% / 0.08)",
             border: "1px solid hsl(34 92% 60% / 0.2)",
-            borderRadius: "10px",
-            padding: "14px 18px",
-            fontSize: "13px",
             color: "#93c5fd",
-            marginBottom: "24px",
           }}
         >
           <strong>Note:</strong> These settings are applied in the dashboard filters. Volume and
@@ -260,21 +213,14 @@ export default function SettingsPage() {
         </div>
 
         {/* Actions */}
-        <div style={{ display: "flex", gap: "12px" }}>
+        <div className="flex gap-3 flex-wrap">
           <button
             onClick={saveSettings}
+            className="min-h-[44px] px-6 rounded-[10px] text-sm font-semibold text-white border-none cursor-pointer transition-all duration-200"
             style={{
-              padding: "10px 24px",
-              borderRadius: "10px",
-              border: "none",
               background: saved
                 ? "linear-gradient(135deg, #10b981, #059669)"
                 : "linear-gradient(135deg, hsl(34 92% 60%), hsl(34 92% 70%))",
-              color: "#fff",
-              fontSize: "14px",
-              fontWeight: 600,
-              cursor: "pointer",
-              transition: "all 0.2s ease",
               boxShadow: saved ? "0 4px 20px rgba(16,185,129,0.3)" : "0 4px 20px hsl(34 92% 60% / 0.3)",
             }}
           >
@@ -282,15 +228,11 @@ export default function SettingsPage() {
           </button>
           <button
             onClick={resetDefaults}
+            className="min-h-[44px] px-6 rounded-[10px] text-sm font-medium cursor-pointer"
             style={{
-              padding: "10px 24px",
-              borderRadius: "10px",
               border: "1px solid rgba(255,255,255,0.1)",
               background: "rgba(255,255,255,0.03)",
               color: "#94a3b8",
-              fontSize: "14px",
-              fontWeight: 500,
-              cursor: "pointer",
             }}
           >
             Reset Defaults
