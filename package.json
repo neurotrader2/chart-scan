@@ -9,28 +9,31 @@
     "lint": "next lint",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^0.10.4",
+    "@upstash/redis": "^1.35.0",
+    "drizzle-orm": "^0.41.0",
     "next": "^15.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "drizzle-orm": "^0.41.0",
-    "@neondatabase/serverless": "^0.10.4",
-    "@upstash/redis": "^1.35.0",
     "recharts": "^2.15.3",
     "simple-statistics": "^7.8.8",
     "yahoo-finance2": "^2.13.3"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@playwright/test": "^1.59.1",
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "tailwindcss": "^4",
-    "@tailwindcss/postcss": "^4",
+    "drizzle-kit": "^0.30.0",
     "eslint": "^9",
     "eslint-config-next": "^15.3.0",
-    "drizzle-kit": "^0.30.0"
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }
