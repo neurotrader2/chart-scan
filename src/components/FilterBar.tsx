@@ -20,6 +20,7 @@ const activeBtn: React.CSSProperties = {
   background: "hsl(34 92% 60% / 0.2)",
   color: "#93c5fd",
   minHeight: "44px",
+  minWidth: "44px",
 };
 
 const inactiveBtn: React.CSSProperties = {
@@ -33,6 +34,7 @@ const inactiveBtn: React.CSSProperties = {
   background: "rgba(255,255,255,0.03)",
   color: "#94a3b8",
   minHeight: "44px",
+  minWidth: "44px",
 };
 
 export default function FilterBar({
