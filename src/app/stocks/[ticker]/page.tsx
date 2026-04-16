@@ -50,7 +50,6 @@ export default function StockDetailPage({
           setError(d.error);
         } else {
           setData(d);
-          // Auto-select best available period
           const available = PERIOD_OPTIONS.filter((p) => p.toString() in d.periods);
           if (available.length && !available.includes(activePeriod)) {
             setActivePeriod(available[0]);
@@ -65,8 +64,8 @@ export default function StockDetailPage({
     return (
       <div style={{ minHeight: "100vh" }}>
         <Navigation />
-        <div style={{ textAlign: "center", padding: "100px 24px", color: "#64748b" }}>
-          <div style={{ fontSize: "40px", marginBottom: "12px" }}>⏳</div>
+        <div className="text-center py-24 px-6" style={{ color: "#64748b" }}>
+          <div className="text-4xl mb-3">⏳</div>
           Loading {ticker.toUpperCase()}...
         </div>
       </div>
@@ -77,9 +76,9 @@ export default function StockDetailPage({
     return (
       <div style={{ minHeight: "100vh" }}>
         <Navigation />
-        <div style={{ textAlign: "center", padding: "100px 24px" }}>
-          <div style={{ fontSize: "40px", marginBottom: "12px" }}>⚠️</div>
-          <h2 style={{ color: "hsl(210 40% 98%)", fontSize: "20px", marginBottom: "8px" }}>
+        <div className="text-center py-24 px-6">
+          <div className="text-4xl mb-3">⚠️</div>
+          <h2 className="text-xl mb-2" style={{ color: "hsl(210 40% 98%)" }}>
             {error ?? "Stock not found"}
           </h2>
           <button
@@ -116,10 +115,11 @@ export default function StockDetailPage({
     <div style={{ minHeight: "100vh" }}>
       <Navigation />
 
-      <main style={{ maxWidth: "1200px", margin: "0 auto", padding: "32px 24px" }}>
+      <main className="max-w-[1200px] mx-auto px-4 py-6 sm:px-6 sm:py-8">
         {/* Back button */}
         <button
           onClick={() => router.push("/")}
+          className="flex items-center gap-1.5 mb-6 text-sm"
           style={{
             padding: "6px 12px",
             borderRadius: "8px",
@@ -127,43 +127,25 @@ export default function StockDetailPage({
             background: "transparent",
             color: "#64748b",
             cursor: "pointer",
-            fontSize: "13px",
-            marginBottom: "24px",
-            display: "flex",
-            alignItems: "center",
-            gap: "6px",
           }}
         >
           ← Dashboard
         </button>
 
         {/* Header */}
-        <div style={{ marginBottom: "28px" }}>
-          <div style={{ display: "flex", alignItems: "baseline", gap: "12px", flexWrap: "wrap" }}>
+        <div className="mb-7">
+          <div className="flex items-baseline gap-3 flex-wrap">
             <h1
-              style={{
-                fontSize: "36px",
-                fontWeight: 800,
-                color: "hsl(210 40% 98%)",
-                margin: 0,
-                letterSpacing: "-0.03em",
-              }}
+              className="text-2xl sm:text-4xl font-extrabold m-0"
+              style={{ color: "hsl(210 40% 98%)", letterSpacing: "-0.03em" }}
             >
               {data.ticker}
             </h1>
             {data.stock && (
-              <span style={{ fontSize: "16px", color: "#64748b" }}>{data.stock.name}</span>
+              <span className="text-base" style={{ color: "#64748b" }}>{data.stock.name}</span>
             )}
           </div>
-          <div
-            style={{
-              display: "flex",
-              gap: "16px",
-              marginTop: "8px",
-              fontSize: "13px",
-              color: "#475569",
-            }}
-          >
+          <div className="flex flex-col sm:flex-row sm:gap-4 mt-2 text-xs sm:text-sm gap-1" style={{ color: "#475569" }}>
             {data.stock?.exchange && <span>{data.stock.exchange}</span>}
             {data.stock?.marketCap && (
               <span>Market Cap: {formatMarketCap(data.stock.marketCap)}</span>
@@ -181,25 +163,21 @@ export default function StockDetailPage({
         </div>
 
         {/* Period tabs */}
-        <div style={{ display: "flex", gap: "4px", marginBottom: "20px" }}>
+        <div className="flex gap-1 flex-wrap mb-5">
           {availablePeriods.map((p) => {
             const active = activePeriod === p;
             return (
               <button
                 key={p}
                 onClick={() => setActivePeriod(p)}
+                className="min-h-[44px] px-4 rounded-lg text-sm font-medium transition-all duration-150"
                 style={{
-                  padding: "7px 16px",
-                  borderRadius: "8px",
-                  fontSize: "13px",
-                  fontWeight: 500,
                   border: active
                     ? "1px solid hsl(34 92% 60% / 0.5)"
                     : "1px solid rgba(255,255,255,0.08)",
                   background: active ? "hsl(34 92% 60% / 0.2)" : "rgba(255,255,255,0.02)",
                   color: active ? "#93c5fd" : "#94a3b8",
                   cursor: "pointer",
-                  transition: "all 0.15s ease",
                 }}
               >
                 {p} months
@@ -211,7 +189,7 @@ export default function StockDetailPage({
         {currentPeriod ? (
           <>
             {/* Metrics */}
-            <div style={{ marginBottom: "24px" }}>
+            <div className="mb-6">
               <MetricsPanel
                 rSquared={currentPeriod.rSquared}
                 slope={currentPeriod.slope}
@@ -223,30 +201,13 @@ export default function StockDetailPage({
             </div>
 
             {/* Chart */}
-            <div
-              className="glass-card"
-              style={{ padding: "24px", marginBottom: "24px" }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: "16px",
-                }}
-              >
-                <h2
-                  style={{
-                    fontSize: "15px",
-                    fontWeight: 600,
-                    color: "#94a3b8",
-                    margin: 0,
-                  }}
-                >
+            <div className="glass-card p-4 sm:p-6 mb-6">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4">
+                <h2 className="text-sm font-semibold m-0" style={{ color: "#94a3b8" }}>
                   Price History — {activePeriod} Month Window
                 </h2>
-                <div style={{ display: "flex", gap: "16px", fontSize: "12px", color: "#475569" }}>
-                  <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <div className="flex gap-4 text-xs" style={{ color: "#475569" }}>
+                  <span className="flex items-center gap-1.5">
                     <div
                       style={{
                         width: "20px",
@@ -257,7 +218,7 @@ export default function StockDetailPage({
                     />
                     Price
                   </span>
-                  <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <span className="flex items-center gap-1.5">
                     <div
                       style={{
                         width: "20px",
@@ -280,14 +241,11 @@ export default function StockDetailPage({
             </div>
 
             {/* R² explanation */}
-            <div
-              className="glass-card"
-              style={{ padding: "20px 24px" }}
-            >
-              <h3 style={{ fontSize: "14px", fontWeight: 600, color: "#94a3b8", margin: "0 0 8px" }}>
+            <div className="glass-card p-5 sm:p-6">
+              <h3 className="text-sm font-semibold m-0 mb-2" style={{ color: "#94a3b8" }}>
                 How to interpret these results
               </h3>
-              <p style={{ fontSize: "13px", color: "#475569", margin: 0, lineHeight: 1.6 }}>
+              <p className="text-xs sm:text-sm m-0 leading-relaxed" style={{ color: "#475569" }}>
                 <strong style={{ color: "#64748b" }}>R² (R-squared)</strong> measures how closely
                 the price follows a straight line over the period. An R² of{" "}
                 <strong style={{ color: "#10b981" }}>0.9+</strong> means the stock is rising very
@@ -300,10 +258,7 @@ export default function StockDetailPage({
             </div>
           </>
         ) : (
-          <div
-            className="glass-card"
-            style={{ padding: "60px", textAlign: "center", color: "#64748b" }}
-          >
+          <div className="glass-card p-12 text-center" style={{ color: "#64748b" }}>
             No analysis data available for this period.
           </div>
         )}
