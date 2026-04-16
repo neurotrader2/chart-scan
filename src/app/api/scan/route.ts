@@ -94,16 +94,30 @@ export async function POST() {
     for (const stock of ranked) {
       for (const [periodStr, result] of Object.entries(stock.periods)) {
         const period = Number(periodStr);
-        await db.insert(scanResults).values({
-          ticker: stock.ticker,
-          rSquared: result.rSquared.toString(),
-          slope: result.slope.toString(),
-          intercept: result.intercept.toString(),
-          periodMonths: period,
-          annualizedReturn: result.annualizedReturn.toString(),
-          compositeScore: result.compositeScore.toString(),
-          currentPrice: stock.currentPrice.toString(),
-        });
+        await db
+          .insert(scanResults)
+          .values({
+            ticker: stock.ticker,
+            rSquared: result.rSquared.toString(),
+            slope: result.slope.toString(),
+            intercept: result.intercept.toString(),
+            periodMonths: period,
+            annualizedReturn: result.annualizedReturn.toString(),
+            compositeScore: result.compositeScore.toString(),
+            currentPrice: stock.currentPrice.toString(),
+          })
+          .onConflictDoUpdate({
+            target: [scanResults.ticker, scanResults.periodMonths],
+            set: {
+              rSquared: result.rSquared.toString(),
+              slope: result.slope.toString(),
+              intercept: result.intercept.toString(),
+              annualizedReturn: result.annualizedReturn.toString(),
+              compositeScore: result.compositeScore.toString(),
+              currentPrice: stock.currentPrice.toString(),
+              scanDate: new Date(),
+            },
+          });
         saved++;
       }
     }

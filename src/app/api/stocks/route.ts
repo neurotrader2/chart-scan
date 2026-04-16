@@ -28,14 +28,12 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  // Query results from latest scan
-  const cutoff = new Date(latestDate);
-  cutoff.setHours(cutoff.getHours() - 1); // Within 1 hour of latest scan
-
+  // Compute the cutoff entirely in SQL to avoid JS Date parsing issues across platforms.
+  // This finds all rows within 1 hour of the latest scan date.
   const conditions = [
     gte(scanResults.rSquared, minR2.toString()),
     eq(scanResults.periodMonths, period),
-    gte(scanResults.scanDate, cutoff),
+    sql`${scanResults.scanDate} >= (SELECT MAX(scan_date) FROM scan_results) - INTERVAL '1 hour'`,
   ];
 
   // Determine sort column
@@ -43,8 +41,8 @@ export async function GET(request: NextRequest) {
     sortBy === "rSquared"
       ? scanResults.rSquared
       : sortBy === "slope"
-      ? scanResults.slope
-      : scanResults.compositeScore;
+        ? scanResults.slope
+        : scanResults.compositeScore;
 
   const [results, countResult] = await Promise.all([
     db

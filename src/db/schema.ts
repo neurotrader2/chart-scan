@@ -26,7 +26,8 @@ export const scanResults = pgTable("scan_results", {
   currentPrice: numeric("current_price", { precision: 12, scale: 4 }),
   scanDate: timestamp("scan_date").defaultNow().notNull(),
 }, (table) => [
-  index("scan_results_ticker_idx").on(table.ticker),
+  // Unique per ticker+period so repeated scans upsert rather than duplicate
+  uniqueIndex("scan_results_ticker_period_idx").on(table.ticker, table.periodMonths),
   index("scan_results_scan_date_idx").on(table.scanDate),
   index("scan_results_r_squared_idx").on(table.rSquared),
 ]);
