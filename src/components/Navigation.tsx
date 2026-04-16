@@ -8,51 +8,22 @@ export default function Navigation() {
 
   return (
     <nav
-      style={{
-        background: "rgba(10, 15, 30, 0.8)",
-        borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
-        backdropFilter: "blur(12px)",
-        WebkitBackdropFilter: "blur(12px)",
-        position: "sticky",
-        top: 0,
-        zIndex: 50,
-      }}
+      className="sticky top-0 z-50 border-b border-white/[0.08] backdrop-blur-md"
+      style={{ background: "rgba(10, 15, 30, 0.8)", WebkitBackdropFilter: "blur(12px)" }}
     >
-      <div
-        style={{
-          maxWidth: "1400px",
-          margin: "0 auto",
-          padding: "0 24px",
-          height: "60px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 h-[60px] flex items-center justify-between">
         {/* Logo */}
         <Link href="/" style={{ textDecoration: "none" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div className="flex items-center gap-2.5">
             <div
-              style={{
-                width: "32px",
-                height: "32px",
-                background: "linear-gradient(135deg, hsl(34 92% 60%), #10b981)",
-                borderRadius: "8px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "16px",
-              }}
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-base shrink-0"
+              style={{ background: "linear-gradient(135deg, hsl(34 92% 60%), #10b981)", fontSize: "16px" }}
             >
               📈
             </div>
             <span
-              style={{
-                fontSize: "18px",
-                fontWeight: 700,
-                color: "hsl(34 92% 60%)",
-                letterSpacing: "-0.02em",
-              }}
+              className="text-lg font-bold truncate"
+              style={{ color: "hsl(34 92% 60%)", letterSpacing: "-0.02em" }}
             >
               Biotech Chart Scanner
             </span>
@@ -60,21 +31,15 @@ export default function Navigation() {
         </Link>
 
         {/* Nav links */}
-        <div style={{ display: "flex", gap: "4px" }}>
+        <div className="flex gap-1 shrink-0">
           <Link
             href="/settings"
             title="Settings"
+            className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg transition-all duration-150"
             style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: "8px",
-              borderRadius: "8px",
-              textDecoration: "none",
               color: "hsl(34 92% 60%)",
               background: pathname === "/settings" ? "hsl(34 92% 60% / 0.15)" : "transparent",
               border: pathname === "/settings" ? "1px solid hsl(34 92% 60% / 0.3)" : "1px solid transparent",
-              transition: "all 0.15s ease",
             }}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
