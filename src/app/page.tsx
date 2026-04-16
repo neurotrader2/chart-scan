@@ -256,6 +256,7 @@ export default function Dashboard() {
                     background: "rgba(255,255,255,0.03)",
                     color: page === 1 ? "#475569" : "#94a3b8",
                     cursor: page === 1 ? "default" : "pointer",
+                    minHeight: "44px",
                   }}
                 >
                   ← Prev
@@ -272,6 +273,7 @@ export default function Dashboard() {
                     background: "rgba(255,255,255,0.03)",
                     color: page === totalPages ? "#475569" : "#94a3b8",
                     cursor: page === totalPages ? "default" : "pointer",
+                    minHeight: "44px",
                   }}
                 >
                   Next →
