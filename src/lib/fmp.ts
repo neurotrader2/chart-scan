@@ -65,7 +65,7 @@ export async function getBiotechStocks(): Promise<FMPStock[]> {
   };
 
   const results = await fmpFetch<ScreenerResult[]>(
-    "/stock-screener?sector=Healthcare&industry=Biotechnology&marketCapLowerThan=2000000000&limit=500",
+    "/stock-screener?sector=Healthcare&industry=Biotechnology&marketCapLowerThan=10000000000&limit=500",
     cacheKey,
     ttl
   );

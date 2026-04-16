@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
     gte(scanResults.rSquared, minR2.toString()),
     eq(scanResults.periodMonths, period),
     sql`${scanResults.scanDate} >= (SELECT MAX(scan_date) FROM scan_results) - INTERVAL '1 hour'`,
-    sql`${stocks.marketCap} < 2000000000`,
+    sql`${stocks.marketCap} < 10000000000`,
   ];
 
   // Determine sort column
