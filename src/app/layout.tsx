@@ -13,6 +13,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
+      <head>
+        <meta name="robots" content="noindex, nofollow, noimageindex" />
+      </head>
       <body className="antialiased">
         {children}
       </body>

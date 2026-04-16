@@ -1,0 +1,257 @@
+# Biotech Stock Scanner — Implementation Plan
+
+A Next.js web app that scans the stock market for biotech stocks exhibiting a slow, steady price rise (3–12 months) using linear regression analysis. Stocks are ranked by R² (consistency) and slope (growth rate).
+
+## User Review Required
+
+> [!IMPORTANT]
+> **API Key Required**: You'll need to provide your FMP API key as an environment variable (`FMP_API_KEY`). The starter tier gives us **300 requests/min** and **20 GB/month bandwidth** — sufficient for scanning ~500 biotech stocks daily.
+
+> [!IMPORTANT]
+> **Database Setup**: We'll need a Neon Postgres connection string and an Upstash Redis URL+token. Please confirm you have these or want me to help set them up.
+
+> [!WARNING]
+> **Yahoo Finance as Fallback**: The `yahoo-finance2` package uses unofficial endpoints that can break. We use it as a fallback only when FMP is rate-limited, not as the primary source.
+
+---
+
+## Architecture Overview
+
+```mermaid
+graph TB
+    subgraph Frontend
+        A[Dashboard Page] --> B[Stock Detail Page]
+        A --> C[Scanner Settings]
+    end
+    subgraph API Routes
+        D["/api/scan"] --> E["/api/stocks"]
+        F["/api/stocks/[ticker]"]
+        G["/api/cron/scan"]
+    end
+    subgraph Services
+        H[FMP API Client]
+        I[Yahoo Finance Fallback]
+        J[Linear Regression Engine]
+    end
+    subgraph Data
+        K[(Neon Postgres)]
+        L[(Upstash Redis)]
+    end
+    A --> E
+    B --> F
+    G --> D
+    D --> H
+    D --> I
+    D --> J
+    H --> L
+    J --> K
+```
+
+---
+
+## Tech Stack
+
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| Framework | Next.js 15 (App Router) | SSR, API routes, cron |
+| Database | Neon Postgres + Drizzle ORM | Persist scan results & stock cache |
+| Cache | Upstash Redis | API response caching, rate limiting |
+| Charts | Recharts | Interactive stock price charts |
+| Math | simple-statistics | Linear regression, R² calculation |
+| Data (Primary) | FMP API | Biotech stock list + historical prices |
+| Data (Fallback) | yahoo-finance2 | Historical prices when FMP limited |
+| Deployment | Vercel | Hosting + cron jobs |
+
+---
+
+## Proposed Changes
+
+### Project Initialization
+
+#### [NEW] Project scaffold
+```
+npx -y create-next-app@latest ./ --typescript --tailwind --eslint --app --src-dir --import-alias "@/*"
+```
+
+> [!NOTE]
+> Using Tailwind here since it's fast for building a polished dark-themed dashboard. Will confirm with you if you prefer vanilla CSS.
+
+---
+
+### Database Schema (Neon + Drizzle)
+
+#### [NEW] `src/db/schema.ts`
+Three core tables:
+
+- **`stocks`** — Biotech stock universe (ticker, name, sector, industry, market_cap, exchange)
+- **`scan_results`** — Linear regression results per scan (ticker, r_squared, slope, intercept, period_months, annualized_return, scan_date)
+- **`daily_prices`** — Cached historical prices (ticker, date, open, high, low, close, volume)
+
+#### [NEW] `src/db/index.ts`
+Drizzle client connected to Neon via `@neondatabase/serverless`.
+
+#### [NEW] `drizzle.config.ts`
+Drizzle Kit config for migrations.
+
+---
+
+### Data Services
+
+#### [NEW] `src/lib/fmp.ts`
+FMP API client with:
+- `getbiotechStocks()` — Screener: `sector=Healthcare&industry=Biotechnology`
+- `getHistoricalPrices(ticker, from, to)` — Daily closing prices
+- Rate limiting via Upstash Redis (300 req/min with safety margin)
+- Response caching (stock list: 24h TTL, prices: 6h TTL)
+
+#### [NEW] `src/lib/yahoo.ts`
+Yahoo Finance fallback client:
+- `getHistoricalPrices(ticker, from, to)` — via `yahoo-finance2`
+- Used only when FMP rate limit is approaching
+
+#### [NEW] `src/lib/redis.ts`
+Upstash Redis client for caching and rate limiting.
+
+---
+
+### Linear Regression Engine
+
+#### [NEW] `src/lib/analysis.ts`
+Core analysis module:
+- `linearRegression(prices[])` — Returns slope, intercept, R²
+- `analyzeStock(ticker, periodMonths)` — Full analysis for one stock
+- `rankStocks(results[])` — Sort by R² with minimum threshold filter
+- `calculateCompositeScore(r2, slope)` — Weighted ranking score
+- Supports multiple time windows: 3, 6, 9, 12 months
+
+**Algorithm:**
+1. Normalize dates to sequential day numbers (x-axis)
+2. Use closing prices as y-axis
+3. Compute linear regression via least squares
+4. Calculate R² = 1 - (SS_res / SS_tot)
+5. Slope represents $/day price increase (annualized for display)
+
+---
+
+### API Routes
+
+#### [NEW] `src/app/api/scan/route.ts`
+- POST: Triggers a full scan
+  1. Fetch biotech stock list from FMP (cached)
+  2. For each stock, fetch 12 months of daily prices
+  3. Run linear regression for 3, 6, 9, 12-month windows
+  4. Store results in Postgres
+  5. Return summary
+
+#### [NEW] `src/app/api/stocks/route.ts`
+- GET: Returns paginated scan results
+  - Query params: `minR2`, `period`, `sortBy`, `page`, `limit`
+
+#### [NEW] `src/app/api/stocks/[ticker]/route.ts`
+- GET: Returns detailed data for one stock
+  - Price history, regression line data points, all period analyses
+
+#### [NEW] `src/app/api/cron/scan/route.ts`
+- GET: Vercel cron endpoint (daily at 6 PM ET, after market close)
+- Protected by `CRON_SECRET` env var
+
+#### [NEW] `vercel.json`
+```json
+{
+  "crons": [{ "path": "/api/cron/scan", "schedule": "0 22 * * 1-5" }]
+}
+```
+
+---
+
+### Frontend Pages
+
+#### [NEW] `src/app/page.tsx` — Dashboard
+- Hero section with app title and last scan timestamp
+- Filter controls: R² threshold slider, time period selector, sort options
+- Results grid: Cards showing ticker, name, R², slope, mini sparkline chart
+- "Scan Now" button to trigger manual scan
+- Real-time progress indicator during scans
+
+#### [NEW] `src/app/stocks/[ticker]/page.tsx` — Stock Detail
+- Full-width interactive price chart (Recharts)
+  - Candlestick or line chart of historical prices
+  - **Regression line overlay** (dashed, color-coded by R²)
+- Metrics panel: R², slope, annualized return, period
+- Multi-period comparison (3/6/9/12 month tabs)
+- Key stats: Market cap, exchange, current price
+
+#### [NEW] `src/app/settings/page.tsx` — Scanner Settings
+- R² minimum threshold (default: 0.7)
+- Time period range (3–12 months)
+- Minimum market cap filter
+- Minimum average volume filter
+- Save settings to localStorage
+
+---
+
+### UI Design System
+
+#### Theme: Dark mode, premium financial dashboard aesthetic
+- **Background**: Deep navy/charcoal (`#0a0f1e` → `#151b2e`)
+- **Cards**: Glassmorphism with subtle borders and backdrop blur
+- **Accent**: Electric blue (`#3b82f6`) and emerald green (`#10b981`) for positive trends
+- **Typography**: Inter font, clean hierarchy
+- **Animations**: Smooth page transitions, card hover effects, chart animations
+
+#### [NEW] `src/app/globals.css`
+Design tokens and global styles.
+
+#### [NEW] `src/components/` — Reusable components
+- `StockCard` — Dashboard result card with sparkline
+- `RegressionChart` — Recharts wrapper with regression line overlay
+- `FilterBar` — R²/period/sort controls
+- `ScanButton` — Animated scan trigger
+- `MetricsPanel` — R², slope, return display
+- `Navigation` — App header/nav
+
+---
+
+## Environment Variables
+
+```env
+FMP_API_KEY=your_fmp_api_key
+DATABASE_URL=your_neon_postgres_url
+UPSTASH_REDIS_REST_URL=your_upstash_url
+UPSTASH_REDIS_REST_TOKEN=your_upstash_token
+CRON_SECRET=your_cron_secret
+```
+
+---
+
+## Verification Plan
+
+### Automated Tests
+
+1. **Linear Regression Unit Test** — Create a test with known data points where we can manually calculate the expected R² and slope. Run via:
+   ```
+   npx jest src/lib/__tests__/analysis.test.ts
+   ```
+
+2. **FMP API Integration Test** — Test that the stock screener returns valid biotech stocks and that historical price parsing works correctly:
+   ```
+   npx jest src/lib/__tests__/fmp.test.ts
+   ```
+
+### Browser Testing
+
+3. **Dashboard Rendering** — Open the app in the browser, verify:
+   - Stock cards render with data
+   - Filter controls work
+   - Scan button triggers scan and shows progress
+
+4. **Stock Detail Page** — Click into a stock ticker, verify:
+   - Chart renders with price data
+   - Regression line is overlaid
+   - R² and slope metrics display correctly
+   - Period tabs switch correctly
+
+### Manual Verification (User)
+
+5. **Spot-check regression results** — Pick 2-3 stocks from the results, manually verify the R² value makes sense by eyeballing the chart (a high R² should show a very linear price movement).
+6. **Vercel deployment** — Deploy to Vercel and verify the cron job fires correctly (this will need to be tested after deployment).
