@@ -19,7 +19,7 @@ const activeBtn: React.CSSProperties = {
   transition: "all 0.15s ease",
   background: "hsl(34 92% 60% / 0.2)",
   color: "#93c5fd",
-  minHeight: "36px",
+  minHeight: "44px",
 };
 
 const inactiveBtn: React.CSSProperties = {
@@ -32,7 +32,7 @@ const inactiveBtn: React.CSSProperties = {
   transition: "all 0.15s ease",
   background: "rgba(255,255,255,0.03)",
   color: "#94a3b8",
-  minHeight: "36px",
+  minHeight: "44px",
 };
 
 export default function FilterBar({
