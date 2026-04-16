@@ -31,21 +31,12 @@ interface ApiResponse {
 
 function EmptyState({ hasRun }: { hasRun: boolean }) {
   return (
-    <div
-      style={{
-        textAlign: "center",
-        padding: "80px 24px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: "16px",
-      }}
-    >
+    <div className="text-center py-16 px-6 flex flex-col items-center gap-4">
       <div style={{ fontSize: "48px" }}>📊</div>
-      <h2 style={{ fontSize: "20px", fontWeight: 700, color: "hsl(210 40% 98%)", margin: 0 }}>
+      <h2 className="text-xl font-bold m-0" style={{ color: "hsl(210 40% 98%)" }}>
         {hasRun ? "No stocks match your filters" : "No scan results yet"}
       </h2>
-      <p style={{ fontSize: "14px", color: "#64748b", margin: 0, maxWidth: "400px" }}>
+      <p className="text-sm m-0 max-w-[400px]" style={{ color: "#64748b" }}>
         {hasRun
           ? "Try lowering the minimum R² threshold or selecting a different time period."
           : 'Click "Scan Now" to fetch and analyze biotech stocks. The first scan may take a few minutes.'}
@@ -137,25 +128,16 @@ export default function Dashboard() {
     <div style={{ minHeight: "100vh" }}>
       <Navigation />
 
-      <main style={{ maxWidth: "1400px", margin: "0 auto", padding: "32px 24px" }}>
+      <main className="max-w-[1400px] mx-auto px-4 py-6 sm:px-6 sm:py-8">
         {/* Header */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            marginBottom: "28px",
-            flexWrap: "wrap",
-            gap: "16px",
-          }}
-        >
+        <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-start mb-7">
           <div>
-            <p style={{ fontSize: "14px", color: "#64748b", margin: 0 }}>
+            <p className="text-sm m-0" style={{ color: "#64748b" }}>
               {total > 0
                 ? `${total} stocks with R² ≥ ${minR2.toFixed(2)} · ${period === 0 ? "all periods" : `${period}mo trend`}`
                 : "Finds stocks on a slow, steady uptrend using linear regression"}
               {lastScan && (
-                <span style={{ marginLeft: "12px", color: "#475569" }}>
+                <span className="ml-3" style={{ color: "#475569" }}>
                   Last scan:{" "}
                   {new Date(lastScan).toLocaleString("en-US", {
                     month: "short",
@@ -167,9 +149,9 @@ export default function Dashboard() {
               )}
             </p>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+          <div className="flex items-center gap-2 flex-wrap">
             {/* Ticker lookup */}
-            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <div className="flex items-center gap-1.5">
               <input
                 type="text"
                 placeholder="Ticker…"
@@ -177,8 +159,8 @@ export default function Dashboard() {
                 disabled={tickerLoading}
                 onChange={(e) => setTickerInput(e.target.value.toUpperCase())}
                 onKeyDown={(e) => e.key === "Enter" && handleTickerLookup()}
+                className="flex-1 sm:w-[100px]"
                 style={{
-                  width: "100px",
                   padding: "9px 12px",
                   borderRadius: "10px",
                   border: "1px solid rgba(255,255,255,0.1)",
@@ -188,6 +170,7 @@ export default function Dashboard() {
                   fontWeight: 600,
                   letterSpacing: "0.05em",
                   outline: "none",
+                  minHeight: "44px",
                 }}
               />
               <button
@@ -200,17 +183,16 @@ export default function Dashboard() {
                   fontWeight: 600,
                   border: "none",
                   cursor: tickerLoading || !tickerInput.trim() ? "default" : "pointer",
-                  background: tickerLoading
-                    ? "rgba(255,255,255,0.08)"
-                    : "rgba(255,255,255,0.08)",
+                  background: "rgba(255,255,255,0.08)",
                   color: tickerLoading || !tickerInput.trim() ? "#475569" : "#94a3b8",
                   transition: "all 0.15s ease",
+                  minHeight: "44px",
                 }}
               >
                 {tickerLoading ? "…" : "Go"}
               </button>
               {tickerError && (
-                <span style={{ fontSize: "12px", color: "#ef4444" }}>{tickerError}</span>
+                <span className="text-xs" style={{ color: "#ef4444" }}>{tickerError}</span>
               )}
             </div>
 
@@ -224,7 +206,7 @@ export default function Dashboard() {
         </div>
 
         {/* Filter bar */}
-        <div style={{ marginBottom: "24px" }}>
+        <div className="mb-6">
           <FilterBar
             minR2={minR2}
             period={period}
@@ -237,22 +219,15 @@ export default function Dashboard() {
 
         {/* Results grid */}
         {loading ? (
-          <div style={{ textAlign: "center", padding: "60px", color: "#64748b" }}>
-            <div style={{ fontSize: "32px", marginBottom: "12px" }}>⏳</div>
+          <div className="text-center py-12 px-6" style={{ color: "#64748b" }}>
+            <div className="text-3xl mb-3">⏳</div>
             Loading...
           </div>
         ) : results.length === 0 ? (
           <EmptyState hasRun={hasRunScan || !!lastScan} />
         ) : (
           <>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-                gap: "16px",
-                marginBottom: "32px",
-              }}
-            >
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
               {results.map((r, i) => (
                 <StockCard
                   key={`${r.ticker}-${r.periodMonths}`}
@@ -271,43 +246,32 @@ export default function Dashboard() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  gap: "8px",
-                  alignItems: "center",
-                }}
-              >
+              <div className="flex justify-center gap-2 items-center">
                 <button
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page === 1}
+                  className="px-4 py-2.5 rounded-lg border text-sm"
                   style={{
-                    padding: "8px 16px",
-                    borderRadius: "8px",
-                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderColor: "rgba(255,255,255,0.1)",
                     background: "rgba(255,255,255,0.03)",
                     color: page === 1 ? "#475569" : "#94a3b8",
                     cursor: page === 1 ? "default" : "pointer",
-                    fontSize: "13px",
                   }}
                 >
                   ← Prev
                 </button>
-                <span style={{ fontSize: "13px", color: "#64748b" }}>
+                <span className="text-sm" style={{ color: "#64748b" }}>
                   Page {page} of {totalPages}
                 </span>
                 <button
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}
+                  className="px-4 py-2.5 rounded-lg border text-sm"
                   style={{
-                    padding: "8px 16px",
-                    borderRadius: "8px",
-                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderColor: "rgba(255,255,255,0.1)",
                     background: "rgba(255,255,255,0.03)",
                     color: page === totalPages ? "#475569" : "#94a3b8",
                     cursor: page === totalPages ? "default" : "pointer",
-                    fontSize: "13px",
                   }}
                 >
                   Next →
