@@ -46,28 +46,42 @@ interface CustomTooltipProps {
   label?: string;
 }
 
-function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
-  if (!active || !payload?.length) return null;
+function makeCustomTooltip(startPrice: number) {
+  return function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
+    if (!active || !payload?.length) return null;
 
-  return (
-    <div
-      style={{
-        background: "hsl(276 55% 16% / 0.95)",
-        border: "1px solid hsl(34 92% 60% / 0.3)",
-        borderRadius: "8px",
-        padding: "10px 14px",
-        fontSize: "13px",
-      }}
-    >
-      <div style={{ color: "#94a3b8", marginBottom: "6px", fontSize: "12px" }}>{label}</div>
-      {payload.map((p) => (
-        <div key={p.name} style={{ color: p.color, display: "flex", gap: "8px" }}>
-          <span style={{ color: "#64748b" }}>{p.name}:</span>
-          <span style={{ fontWeight: 600 }}>{formatPrice(p.value)}</span>
-        </div>
-      ))}
-    </div>
-  );
+    const priceEntry = payload.find((p) => p.name === "Price");
+    const pct = priceEntry && startPrice > 0
+      ? ((priceEntry.value - startPrice) / startPrice) * 100
+      : null;
+    const pctColor = pct == null ? "#94a3b8" : pct >= 0 ? "#10b981" : "#ef4444";
+    const pctPrefix = pct != null && pct >= 0 ? "+" : "";
+
+    return (
+      <div
+        style={{
+          background: "hsl(276 55% 16% / 0.95)",
+          border: "1px solid hsl(34 92% 60% / 0.3)",
+          borderRadius: "8px",
+          padding: "10px 14px",
+          fontSize: "13px",
+        }}
+      >
+        <div style={{ color: "#94a3b8", marginBottom: "6px", fontSize: "12px" }}>{label}</div>
+        {payload.map((p) => (
+          <div key={p.name} style={{ color: p.color, display: "flex", gap: "8px" }}>
+            <span style={{ color: "#64748b" }}>{p.name}:</span>
+            <span style={{ fontWeight: 600 }}>{formatPrice(p.value)}</span>
+          </div>
+        ))}
+        {pct != null && (
+          <div style={{ marginTop: "4px", color: pctColor, fontWeight: 700, fontSize: "14px" }}>
+            {pctPrefix}{pct.toFixed(2)}%
+          </div>
+        )}
+      </div>
+    );
+  };
 }
 
 export default function RegressionChart({
@@ -89,6 +103,8 @@ export default function RegressionChart({
   const prices = priceData.map((p) => p.close);
   const minPrice = Math.min(...prices) * 0.97;
   const maxPrice = Math.max(...prices) * 1.03;
+  const startPrice = prices[0] ?? 0;
+  const CustomTooltip = makeCustomTooltip(startPrice);
 
   const r2Color =
     !rSquared ? "hsl(34 92% 60%)"
