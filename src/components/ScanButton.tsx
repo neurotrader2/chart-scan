@@ -64,6 +64,7 @@ export default function ScanButton({ onComplete }: ScanButtonProps) {
           fontWeight: 600,
           border: "none",
           cursor: isScanning ? "wait" : "pointer",
+          minHeight: "44px",
           background: isScanning
             ? "linear-gradient(135deg, hsl(34 92% 70%), hsl(34 92% 70% / 0.86))"
             : state === "done" ? "linear-gradient(135deg, #10b981, #10b981dd)"
