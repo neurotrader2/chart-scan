@@ -237,7 +237,6 @@ export default function StockDetailPage({
                 priceData={currentPeriod.dataPoints}
                 regressionLine={currentPeriod.regressionLine}
                 rSquared={currentPeriod.rSquared}
-                height={380}
               />
             </div>
 
