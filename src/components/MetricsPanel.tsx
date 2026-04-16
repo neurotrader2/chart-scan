@@ -33,31 +33,20 @@ interface MetricCardProps {
 function MetricCard({ label, value, sub, color }: MetricCardProps) {
   return (
     <div
-      style={{
-        background: "rgba(255, 255, 255, 0.03)",
-        border: "1px solid rgba(255, 255, 255, 0.08)",
-        borderRadius: "10px",
-        padding: "16px 20px",
-        flex: 1,
-        minWidth: "120px",
-      }}
+      className="p-3 md:p-4 rounded-[10px] border border-white/[0.08]"
+      style={{ background: "rgba(255, 255, 255, 0.03)" }}
     >
-      <div style={{ fontSize: "12px", color: "#64748b", marginBottom: "6px", fontWeight: 500 }}>
+      <div className="text-[11px] font-medium mb-1.5" style={{ color: "#64748b" }}>
         {label}
       </div>
       <div
-        style={{
-          fontSize: "24px",
-          fontWeight: 700,
-          color: color ?? "hsl(210 40% 98%)",
-          letterSpacing: "-0.02em",
-          lineHeight: 1.1,
-        }}
+        className="text-xl md:text-2xl font-bold leading-tight"
+        style={{ color: color ?? "hsl(210 40% 98%)", letterSpacing: "-0.02em" }}
       >
         {value}
       </div>
       {sub && (
-        <div style={{ fontSize: "11px", color: "#64748b", marginTop: "4px" }}>{sub}</div>
+        <div className="text-[11px] mt-1" style={{ color: "#64748b" }}>{sub}</div>
       )}
     </div>
   );
@@ -77,7 +66,7 @@ export default function MetricsPanel({
   const returnPrefix = annualizedReturn >= 0 ? "+" : "";
 
   return (
-    <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
       <MetricCard
         label="R² Score"
         value={rSquared.toFixed(3)}
