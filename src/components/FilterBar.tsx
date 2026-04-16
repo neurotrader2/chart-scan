@@ -9,28 +9,30 @@ interface FilterBarProps {
   onSortByChange: (v: string) => void;
 }
 
-const buttonBase: React.CSSProperties = {
+const activeBtn: React.CSSProperties = {
   padding: "6px 14px",
   borderRadius: "8px",
   fontSize: "13px",
   fontWeight: 500,
-  border: "1px solid transparent",
+  border: "1px solid hsl(34 92% 60% / 0.5)",
   cursor: "pointer",
   transition: "all 0.15s ease",
-};
-
-const activeBtn: React.CSSProperties = {
-  ...buttonBase,
   background: "hsl(34 92% 60% / 0.2)",
-  borderColor: "hsl(34 92% 60% / 0.5)",
   color: "#93c5fd",
+  minHeight: "36px",
 };
 
 const inactiveBtn: React.CSSProperties = {
-  ...buttonBase,
+  padding: "6px 14px",
+  borderRadius: "8px",
+  fontSize: "13px",
+  fontWeight: 500,
+  border: "1px solid rgba(255,255,255,0.08)",
+  cursor: "pointer",
+  transition: "all 0.15s ease",
   background: "rgba(255,255,255,0.03)",
-  borderColor: "rgba(255,255,255,0.08)",
   color: "#94a3b8",
+  minHeight: "36px",
 };
 
 export default function FilterBar({
@@ -50,20 +52,12 @@ export default function FilterBar({
 
   return (
     <div
-      style={{
-        background: "rgba(255,255,255,0.02)",
-        border: "1px solid rgba(255,255,255,0.06)",
-        borderRadius: "12px",
-        padding: "16px 20px",
-        display: "flex",
-        flexWrap: "wrap",
-        gap: "20px",
-        alignItems: "center",
-      }}
+      className="flex flex-wrap gap-3 md:gap-5 items-center p-4 md:p-5 rounded-xl border border-white/[0.06]"
+      style={{ background: "rgba(255,255,255,0.02)" }}
     >
       {/* R² slider */}
-      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-        <label style={{ fontSize: "13px", color: "#94a3b8", fontWeight: 500, whiteSpace: "nowrap" }}>
+      <div className="flex items-center gap-2.5">
+        <label className="text-xs font-medium whitespace-nowrap" style={{ color: "#94a3b8" }}>
           Min R²
         </label>
         <input
@@ -75,28 +69,17 @@ export default function FilterBar({
           onChange={(e) => onMinR2Change(parseFloat(e.target.value))}
           style={{ width: "100px", accentColor: "hsl(34 92% 60%)" }}
         />
-        <span
-          style={{
-            fontSize: "13px",
-            fontWeight: 700,
-            color: "hsl(210 40% 98%)",
-            minWidth: "36px",
-          }}
-        >
+        <span className="text-xs font-bold min-w-[36px]" style={{ color: "hsl(210 40% 98%)" }}>
           {minR2.toFixed(2)}
         </span>
       </div>
 
       {/* Period selector */}
-      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-        <span style={{ fontSize: "13px", color: "#94a3b8", fontWeight: 500 }}>Period</span>
-        <div style={{ display: "flex", gap: "4px" }}>
+      <div className="flex items-center gap-2">
+        <span className="text-xs font-medium" style={{ color: "#94a3b8" }}>Period</span>
+        <div className="flex gap-1 flex-wrap">
           {periods.map((p) => (
-            <button
-              key={p}
-              onClick={() => onPeriodChange(p)}
-              style={period === p ? activeBtn : inactiveBtn}
-            >
+            <button key={p} onClick={() => onPeriodChange(p)} style={period === p ? activeBtn : inactiveBtn}>
               {p === 0 ? "All" : `${p}mo`}
             </button>
           ))}
@@ -104,9 +87,9 @@ export default function FilterBar({
       </div>
 
       {/* Sort selector */}
-      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-        <span style={{ fontSize: "13px", color: "#94a3b8", fontWeight: 500 }}>Sort by</span>
-        <div style={{ display: "flex", gap: "4px" }}>
+      <div className="flex items-center gap-2">
+        <span className="text-xs font-medium" style={{ color: "#94a3b8" }}>Sort by</span>
+        <div className="flex gap-1 flex-wrap">
           {sortOptions.map((opt) => (
             <button
               key={opt.value}
