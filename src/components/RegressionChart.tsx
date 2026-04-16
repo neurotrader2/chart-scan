@@ -52,8 +52,8 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   return (
     <div
       style={{
-        background: "rgba(21, 27, 46, 0.95)",
-        border: "1px solid rgba(59, 130, 246, 0.3)",
+        background: "hsl(276 55% 16% / 0.95)",
+        border: "1px solid hsl(34 92% 60% / 0.3)",
         borderRadius: "8px",
         padding: "10px 14px",
         fontSize: "13px",
@@ -91,7 +91,7 @@ export default function RegressionChart({
   const maxPrice = Math.max(...prices) * 1.03;
 
   const r2Color =
-    !rSquared ? "#3b82f6"
+    !rSquared ? "hsl(34 92% 60%)"
     : rSquared >= 0.9 ? "#10b981"
     : rSquared >= 0.8 ? "#34d399"
     : rSquared >= 0.7 ? "#f59e0b"
@@ -103,8 +103,8 @@ export default function RegressionChart({
         <ComposedChart data={chartData} margin={{ top: 10, right: 20, left: 10, bottom: 0 }}>
           <defs>
             <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.15} />
-              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+              <stop offset="5%" stopColor="hsl(34 92% 60%)" stopOpacity={0.15} />
+              <stop offset="95%" stopColor="hsl(34 92% 60%)" stopOpacity={0} />
             </linearGradient>
           </defs>
           <CartesianGrid
@@ -135,11 +135,11 @@ export default function RegressionChart({
             type="monotone"
             dataKey="close"
             name="Price"
-            stroke="#3b82f6"
+            stroke="hsl(34 92% 60%)"
             strokeWidth={1.5}
             fill="url(#priceGradient)"
             dot={false}
-            activeDot={{ r: 4, fill: "#3b82f6" }}
+            activeDot={{ r: 4, fill: "hsl(34 92% 60%)" }}
           />
           {regressionLine && (
             <Line

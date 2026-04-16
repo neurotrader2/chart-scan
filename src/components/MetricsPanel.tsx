@@ -49,7 +49,7 @@ function MetricCard({ label, value, sub, color }: MetricCardProps) {
         style={{
           fontSize: "24px",
           fontWeight: 700,
-          color: color ?? "#f1f5f9",
+          color: color ?? "hsl(210 40% 98%)",
           letterSpacing: "-0.02em",
           lineHeight: 1.1,
         }}
@@ -94,7 +94,7 @@ export default function MetricsPanel({
         label="Daily Slope"
         value={`$${slope.toFixed(4)}`}
         sub="$/day change"
-        color="#3b82f6"
+        color="hsl(34 92% 60%)"
       />
       <MetricCard
         label="Current Price"

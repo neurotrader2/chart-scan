@@ -49,8 +49,8 @@ export default function ScanButton({ onComplete }: ScanButtonProps) {
   const isScanning = state === "scanning";
   const bgColor =
     state === "done" ? "#10b981"
-    : state === "error" ? "#ef4444"
-    : "#3b82f6";
+      : state === "error" ? "#ef4444"
+        : "hsl(34 92% 60%)";
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
@@ -65,14 +65,16 @@ export default function ScanButton({ onComplete }: ScanButtonProps) {
           border: "none",
           cursor: isScanning ? "wait" : "pointer",
           background: isScanning
-            ? "rgba(59,130,246,0.3)"
-            : `linear-gradient(135deg, ${bgColor}, ${bgColor}dd)`,
+            ? "linear-gradient(135deg, hsl(34 92% 70%), hsl(34 92% 70% / 0.86))"
+            : state === "done" ? "linear-gradient(135deg, #10b981, #10b981dd)"
+              : state === "error" ? "linear-gradient(135deg, #ef4444, #ef4444dd)"
+                : "linear-gradient(135deg, hsl(34 92% 60%), hsl(34 92% 60% / 0.86))",
           color: "#fff",
           display: "flex",
           alignItems: "center",
           gap: "8px",
           transition: "all 0.2s ease",
-          boxShadow: isScanning ? "none" : `0 4px 20px ${bgColor}40`,
+          boxShadow: isScanning ? "0 4px 20px hsl(34 92% 70% / 0.4)" : state === "idle" ? "0 4px 20px hsl(34 92% 60% / 0.25)" : "none",
         }}
       >
         {isScanning ? (

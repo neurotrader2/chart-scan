@@ -54,8 +54,8 @@ export default function StockCard({
         }}
         onMouseEnter={(e) => {
           (e.currentTarget as HTMLDivElement).style.transform = "translateY(-2px)";
-          (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(59, 130, 246, 0.3)";
-          (e.currentTarget as HTMLDivElement).style.boxShadow = "0 8px 32px rgba(59, 130, 246, 0.1)";
+          (e.currentTarget as HTMLDivElement).style.borderColor = "hsl(34 92% 60% / 0.3)";
+          (e.currentTarget as HTMLDivElement).style.boxShadow = "0 8px 32px hsl(34 92% 60% / 0.1)";
         }}
         onMouseLeave={(e) => {
           (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)";
@@ -85,7 +85,7 @@ export default function StockCard({
             style={{
               width: "40px",
               height: "40px",
-              background: "linear-gradient(135deg, rgba(59,130,246,0.2), rgba(16,185,129,0.2))",
+              background: "linear-gradient(135deg, hsl(34 92% 60% / 0.2), rgba(16,185,129,0.2))",
               border: `1px solid ${r2Color}40`,
               borderRadius: "10px",
               display: "flex",
@@ -104,7 +104,7 @@ export default function StockCard({
               style={{
                 fontSize: "16px",
                 fontWeight: 700,
-                color: "#f1f5f9",
+                color: "hsl(210 40% 98%)",
                 letterSpacing: "0.02em",
               }}
             >
@@ -132,7 +132,7 @@ export default function StockCard({
                 <Line
                   type="monotone"
                   dataKey="v"
-                  stroke={annualizedReturn >= 0 ? "#3b82f6" : "#ef4444"}
+                  stroke={annualizedReturn >= 0 ? "hsl(34 92% 60%)" : "#ef4444"}
                   strokeWidth={1.5}
                   dot={false}
                 />
@@ -193,7 +193,7 @@ export default function StockCard({
               style={{
                 height: "100%",
                 width: `${Math.min(100, compositeScore * 100)}%`,
-                background: `linear-gradient(90deg, #3b82f6, ${r2Color})`,
+                background: `linear-gradient(90deg, hsl(34 92% 60%), ${r2Color})`,
                 borderRadius: "2px",
                 transition: "width 0.5s ease",
               }}

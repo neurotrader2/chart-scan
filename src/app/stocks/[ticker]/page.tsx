@@ -79,7 +79,7 @@ export default function StockDetailPage({
         <Navigation />
         <div style={{ textAlign: "center", padding: "100px 24px" }}>
           <div style={{ fontSize: "40px", marginBottom: "12px" }}>⚠️</div>
-          <h2 style={{ color: "#f1f5f9", fontSize: "20px", marginBottom: "8px" }}>
+          <h2 style={{ color: "hsl(210 40% 98%)", fontSize: "20px", marginBottom: "8px" }}>
             {error ?? "Stock not found"}
           </h2>
           <button
@@ -87,8 +87,8 @@ export default function StockDetailPage({
             style={{
               padding: "8px 18px",
               borderRadius: "8px",
-              border: "1px solid rgba(59,130,246,0.3)",
-              background: "rgba(59,130,246,0.1)",
+              border: "1px solid hsl(34 92% 60% / 0.3)",
+              background: "hsl(34 92% 60% / 0.1)",
               color: "#93c5fd",
               cursor: "pointer",
               fontSize: "14px",
@@ -144,7 +144,7 @@ export default function StockDetailPage({
               style={{
                 fontSize: "36px",
                 fontWeight: 800,
-                color: "#f1f5f9",
+                color: "hsl(210 40% 98%)",
                 margin: 0,
                 letterSpacing: "-0.03em",
               }}
@@ -194,9 +194,9 @@ export default function StockDetailPage({
                   fontSize: "13px",
                   fontWeight: 500,
                   border: active
-                    ? "1px solid rgba(59,130,246,0.5)"
+                    ? "1px solid hsl(34 92% 60% / 0.5)"
                     : "1px solid rgba(255,255,255,0.08)",
-                  background: active ? "rgba(59,130,246,0.2)" : "rgba(255,255,255,0.02)",
+                  background: active ? "hsl(34 92% 60% / 0.2)" : "rgba(255,255,255,0.02)",
                   color: active ? "#93c5fd" : "#94a3b8",
                   cursor: "pointer",
                   transition: "all 0.15s ease",
@@ -251,7 +251,7 @@ export default function StockDetailPage({
                       style={{
                         width: "20px",
                         height: "2px",
-                        background: "#3b82f6",
+                        background: "hsl(34 92% 60%)",
                         borderRadius: "1px",
                       }}
                     />

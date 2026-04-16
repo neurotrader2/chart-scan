@@ -21,8 +21,8 @@ const buttonBase: React.CSSProperties = {
 
 const activeBtn: React.CSSProperties = {
   ...buttonBase,
-  background: "rgba(59, 130, 246, 0.2)",
-  borderColor: "rgba(59, 130, 246, 0.5)",
+  background: "hsl(34 92% 60% / 0.2)",
+  borderColor: "hsl(34 92% 60% / 0.5)",
   color: "#93c5fd",
 };
 
@@ -73,13 +73,13 @@ export default function FilterBar({
           step="0.01"
           value={minR2}
           onChange={(e) => onMinR2Change(parseFloat(e.target.value))}
-          style={{ width: "100px", accentColor: "#3b82f6" }}
+          style={{ width: "100px", accentColor: "hsl(34 92% 60%)" }}
         />
         <span
           style={{
             fontSize: "13px",
             fontWeight: 700,
-            color: "#f1f5f9",
+            color: "hsl(210 40% 98%)",
             minWidth: "36px",
           }}
         >

@@ -41,7 +41,7 @@ function EmptyState({ hasRun }: { hasRun: boolean }) {
       }}
     >
       <div style={{ fontSize: "48px" }}>📊</div>
-      <h2 style={{ fontSize: "20px", fontWeight: 700, color: "#f1f5f9", margin: 0 }}>
+      <h2 style={{ fontSize: "20px", fontWeight: 700, color: "hsl(210 40% 98%)", margin: 0 }}>
         {hasRun ? "No stocks match your filters" : "No scan results yet"}
       </h2>
       <p style={{ fontSize: "14px", color: "#64748b", margin: 0, maxWidth: "400px" }}>
@@ -118,17 +118,6 @@ export default function Dashboard() {
           }}
         >
           <div>
-            <h1
-              style={{
-                fontSize: "28px",
-                fontWeight: 800,
-                color: "#f1f5f9",
-                margin: "0 0 6px",
-                letterSpacing: "-0.03em",
-              }}
-            >
-              Biotech Scanner
-            </h1>
             <p style={{ fontSize: "14px", color: "#64748b", margin: 0 }}>
               {total > 0
                 ? `${total} stocks with R² ≥ ${minR2.toFixed(2)} · ${period}mo trend`

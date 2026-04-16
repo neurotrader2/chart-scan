@@ -65,13 +65,13 @@ function SliderSetting({
           marginBottom: "4px",
         }}
       >
-        <label style={{ fontSize: "14px", fontWeight: 600, color: "#f1f5f9" }}>{label}</label>
+        <label style={{ fontSize: "14px", fontWeight: 600, color: "hsl(210 40% 98%)" }}>{label}</label>
         <span
           style={{
             fontSize: "14px",
             fontWeight: 700,
-            color: "#3b82f6",
-            background: "rgba(59,130,246,0.1)",
+            color: "hsl(34 92% 60%)",
+            background: "hsl(34 92% 60% / 0.1)",
             padding: "2px 10px",
             borderRadius: "6px",
           }}
@@ -87,7 +87,7 @@ function SliderSetting({
         step={step}
         value={value}
         onChange={(e) => onChange(parseFloat(e.target.value))}
-        style={{ width: "100%", accentColor: "#3b82f6" }}
+        style={{ width: "100%", accentColor: "hsl(34 92% 60%)" }}
       />
       <div
         style={{
@@ -140,7 +140,7 @@ export default function SettingsPage() {
             style={{
               fontSize: "28px",
               fontWeight: 800,
-              color: "#f1f5f9",
+              color: "hsl(210 40% 98%)",
               margin: "0 0 6px",
               letterSpacing: "-0.03em",
             }}
@@ -245,8 +245,8 @@ export default function SettingsPage() {
         {/* Notice */}
         <div
           style={{
-            background: "rgba(59,130,246,0.08)",
-            border: "1px solid rgba(59,130,246,0.2)",
+            background: "hsl(34 92% 60% / 0.08)",
+            border: "1px solid hsl(34 92% 60% / 0.2)",
             borderRadius: "10px",
             padding: "14px 18px",
             fontSize: "13px",
@@ -269,13 +269,13 @@ export default function SettingsPage() {
               border: "none",
               background: saved
                 ? "linear-gradient(135deg, #10b981, #059669)"
-                : "linear-gradient(135deg, #3b82f6, #2563eb)",
+                : "linear-gradient(135deg, hsl(34 92% 60%), hsl(34 92% 70%))",
               color: "#fff",
               fontSize: "14px",
               fontWeight: 600,
               cursor: "pointer",
               transition: "all 0.2s ease",
-              boxShadow: saved ? "0 4px 20px rgba(16,185,129,0.3)" : "0 4px 20px rgba(59,130,246,0.3)",
+              boxShadow: saved ? "0 4px 20px rgba(16,185,129,0.3)" : "0 4px 20px hsl(34 92% 60% / 0.3)",
             }}
           >
             {saved ? "✓ Saved" : "Save Settings"}
