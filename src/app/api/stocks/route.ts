@@ -71,6 +71,7 @@ export async function GET(request: NextRequest) {
     db
       .select({ count: sql<number>`count(*)` })
       .from(scanResults)
+      .leftJoin(stocks, eq(stocks.ticker, scanResults.ticker))
       .where(and(...conditions)),
   ]);
 
