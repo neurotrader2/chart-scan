@@ -207,32 +207,7 @@ export default function StockDetailPage({
                 <h2 className="text-sm font-semibold m-0" style={{ color: "#94a3b8" }}>
                   Price History — {activePeriod} Month Window
                 </h2>
-                <div className="flex gap-4 text-xs" style={{ color: "#475569" }}>
-                  <span className="flex items-center gap-1.5">
-                    <div
-                      style={{
-                        width: "20px",
-                        height: "2px",
-                        background: "hsl(34 92% 60%)",
-                        borderRadius: "1px",
-                      }}
-                    />
-                    Price
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <div
-                      style={{
-                        width: "20px",
-                        height: "2px",
-                        background: "#10b981",
-                        borderRadius: "1px",
-                        borderTop: "2px dashed #10b981",
-                      }}
-                    />
-                    Regression
-                  </span>
                 </div>
-              </div>
               <RegressionChart
                 priceData={currentPeriod.dataPoints}
                 regressionLine={currentPeriod.regressionLine}
