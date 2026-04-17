@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   ResponsiveContainer,
   ComposedChart,
@@ -91,6 +92,7 @@ export default function RegressionChart({
   rSquared,
   height,
 }: RegressionChartProps) {
+  const [isLog, setIsLog] = useState(true);
   const isMobile = useBreakpoint();
   const chartHeight = height ?? (isMobile ? 220 : 350);
   const yAxisWidth = isMobile ? 40 : 60;
@@ -106,7 +108,7 @@ export default function RegressionChart({
   });
 
   const prices = priceData.map((p) => p.close);
-  const minPrice = Math.min(...prices) * 0.97;
+  const minPrice = Math.max(Math.min(...prices) * 0.97, 0.01);
   const maxPrice = Math.max(...prices) * 1.03;
   const startPrice = prices[0] ?? 0;
   const CustomTooltip = makeCustomTooltip(startPrice);
@@ -119,7 +121,26 @@ export default function RegressionChart({
     : "#ef4444";
 
   return (
-    <div style={{ width: "100%", height: chartHeight }}>
+    <div style={{ width: "100%" }}>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "6px" }}>
+        <button
+          onClick={() => setIsLog((v) => !v)}
+          style={{
+            fontSize: "11px",
+            padding: "2px 10px",
+            borderRadius: "4px",
+            border: "1px solid hsl(34 92% 60% / 0.4)",
+            background: isLog ? "hsl(34 92% 60% / 0.15)" : "transparent",
+            color: isLog ? "hsl(34 92% 60%)" : "#64748b",
+            cursor: "pointer",
+            fontFamily: "inherit",
+            letterSpacing: "0.04em",
+          }}
+        >
+          {isLog ? "LOG" : "LINEAR"}
+        </button>
+      </div>
+      <div style={{ height: chartHeight }}>
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart data={chartData} margin={{ top: 10, right: 20, left: 10, bottom: 0 }}>
           <defs>
@@ -141,12 +162,14 @@ export default function RegressionChart({
             interval="preserveStartEnd"
           />
           <YAxis
+            scale={isLog ? "log" : "linear"}
             domain={[minPrice, maxPrice]}
-            tickFormatter={(v) => `$${v.toFixed(0)}`}
+            tickFormatter={(v) => `$${v < 1 ? v.toFixed(2) : v.toFixed(0)}`}
             tick={{ fill: "#64748b", fontSize: tickFontSize }}
             tickLine={false}
             axisLine={false}
             width={yAxisWidth}
+            allowDataOverflow
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend
@@ -176,6 +199,7 @@ export default function RegressionChart({
           )}
         </ComposedChart>
       </ResponsiveContainer>
+      </div>
     </div>
   );
 }
