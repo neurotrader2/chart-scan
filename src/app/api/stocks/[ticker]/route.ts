@@ -79,13 +79,22 @@ export async function GET(
     }
   > = {};
 
-  for (const result of latestResults) {
+  // Process shortest periods first so longer periods with identical data windows are skipped
+  const sortedResults = [...latestResults].sort((a, b) => a.periodMonths - b.periodMonths);
+  const seenDataPointCounts = new Set<number>();
+
+  for (const result of sortedResults) {
     const months = result.periodMonths;
     const cutoffDate = new Date();
     cutoffDate.setMonth(cutoffDate.getMonth() - months);
     const cutoffStr = cutoffDate.toISOString().split("T")[0];
 
     const periodPrices = priceData.filter((p) => p.date >= cutoffStr);
+
+    // If this period produces the same data window as a shorter period (stock too new),
+    // skip it — showing identical charts for multiple tabs is confusing
+    if (seenDataPointCounts.has(periodPrices.length)) continue;
+    seenDataPointCounts.add(periodPrices.length);
 
     const regressionResult = {
       slope: parseFloat(result.slope),
