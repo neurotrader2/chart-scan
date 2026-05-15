@@ -20,10 +20,7 @@ export async function middleware(request: NextRequest) {
     const sessionCookie = request.cookies.get('__auth_session')?.value;
 
     if (!token && !sessionCookie) {
-        return new NextResponse(
-            'Unauthorized: Must be accessed from OrangutanAlpha',
-            { status: 401 }
-        );
+        return NextResponse.redirect('https://www.orangutanalpha.com');
     }
 
     if (token) {
